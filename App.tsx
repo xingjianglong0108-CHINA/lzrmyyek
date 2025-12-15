@@ -6,10 +6,12 @@ import Header from './components/Header';
 import Step1 from './components/Step1';
 import Step2 from './components/Step2';
 import Step3 from './components/Step3';
-import { ChevronLeft, ChevronRight, Printer } from 'lucide-react';
+import ReferenceTables from './components/ReferenceTables';
+import { ChevronLeft, ChevronRight, Printer, BookOpen } from 'lucide-react';
 
 const App: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [showRef, setShowRef] = useState(false);
   const [data, setData] = useState<AssessmentData>({
       name: '', 
       gender: 'male', 
@@ -43,6 +45,17 @@ const App: React.FC = () => {
   return (
       <div className="min-h-screen pb-24">
           <ProgressBar step={step} />
+          
+          <button 
+              onClick={() => setShowRef(true)}
+              className="fixed top-3 right-4 z-50 flex items-center gap-2 px-3 py-1.5 bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-full text-xs font-medium text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all print:hidden"
+          >
+              <BookOpen className="w-4 h-4" /> 
+              <span className="hidden sm:inline">决策备查表</span>
+          </button>
+
+          {showRef && <ReferenceTables onClose={() => setShowRef(false)} />}
+
           {step === 1 && <Header />}
           
           <main className="px-4 py-6">
