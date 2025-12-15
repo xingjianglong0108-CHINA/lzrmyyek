@@ -1,0 +1,5 @@
+{
+  "name": "Immunization Assessment System",
+  "description": "A clinical decision support tool for child immunization assessment based on CDC/ACIP guidelines.",
+  "requestFramePermissions": []
+}
