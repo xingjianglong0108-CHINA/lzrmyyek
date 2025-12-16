@@ -113,6 +113,87 @@ const ReferenceTables: React.FC<ReferenceTablesProps> = ({ onClose }) => {
                     </table>
                 </div>
             </section>
+
+             {/* Table 3: 中国儿童免疫规划表 */}
+             <section className="space-y-4 print:mt-8">
+                <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-base font-bold text-slate-900 border-l-4 border-emerald-500 pl-3">
+                        3. 中国儿童免疫规划 (一类) 与常见非免疫规划 (二类) 疫苗参考表
+                    </h3>
+                </div>
+                <div className="border border-slate-200 rounded-lg overflow-hidden print:border-black">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200 print:bg-gray-100 print:border-black">
+                            <tr>
+                                <th className="p-3 w-1/4">接种月龄/年龄</th>
+                                <th className="p-3 w-1/3">一类疫苗 (免费/强制)</th>
+                                <th className="p-3">常见二类疫苗 (自费/自愿)</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 print:divide-black">
+                            {[
+                                ["出生时", "乙肝①、卡介苗", "-"],
+                                ["1 月龄", "乙肝②", "-"],
+                                ["2 月龄", "脊灰① (IPV)", "13价肺炎①、五联①、轮状病毒"],
+                                ["3 月龄", "脊灰② (IPV)、百白破①", "13价肺炎②、五联②"],
+                                ["4 月龄", "脊灰③ (OPV)、百白破②", "13价肺炎③、五联③"],
+                                ["5 月龄", "百白破③", "-"],
+                                ["6 月龄", "乙肝③、流脑A群①", "手足口(EV71)、流感、13价肺炎④(12月前)"],
+                                ["8 月龄", "麻腮风①、乙脑①", "-"],
+                                ["9 月龄", "流脑A群②", "-"],
+                                ["12-15 月龄", "-", "水痘①、Hib"],
+                                ["18 月龄", "百白破④、麻腮风②、甲肝①", "五联④"],
+                                ["2 周岁", "乙脑②", "-"],
+                                ["3 周岁", "流脑A+C群①", "-"],
+                                ["4 周岁", "脊灰④ (OPV)", "水痘②"],
+                                ["6 周岁", "白破、流脑A+C群②", "-"],
+                            ].map(([age, class1, class2], i) => (
+                                <tr key={i} className="hover:bg-slate-50/50 print:break-inside-avoid">
+                                    <td className="p-3 font-medium text-slate-900">{age}</td>
+                                    <td className="p-3 text-emerald-700 font-medium print:text-black">{class1}</td>
+                                    <td className="p-3 text-slate-600 print:text-black">{class2}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+             {/* Table 4: 禁忌症 */}
+             <section className="space-y-4 print:mt-8">
+                <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-base font-bold text-slate-900 border-l-4 border-red-500 pl-3">
+                        4. 常见疫苗接种绝对禁忌症速查
+                    </h3>
+                    <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded w-fit">
+                        依据中国药典及说明书
+                    </span>
+                </div>
+                <div className="border border-slate-200 rounded-lg overflow-hidden print:border-black">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200 print:bg-gray-100 print:border-black">
+                            <tr>
+                                <th className="p-3 w-1/4">疫苗类型</th>
+                                <th className="p-3">绝对禁忌症 (Contraindications)</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 print:divide-black">
+                            {[
+                                ["所有疫苗 (通用)", "1. 对疫苗中任何成分（包括辅料、抗生素）严重过敏者。\n2. 既往接种该疫苗发生过严重过敏反应（如过敏性休克、喉头水肿）。\n3. 患急性疾病、严重慢性疾病、慢性疾病的急性发作期、发热者（暂缓）。"],
+                                ["减毒活疫苗 (卡介苗/麻腮风/乙脑/水痘等)", "1. 免疫缺陷、免疫功能低下或正在接受免疫抑制治疗者。\n2. 妊娠期妇女。"],
+                                ["百白破疫苗 (DTaP)", "1. 患有进行性神经系统疾病（如未控制的癫痫、婴儿痉挛症、进行性脑病）。\n2. 既往接种含百日咳成分疫苗后发生脑病。"],
+                                ["脊灰减毒活疫苗 (OPV)", "1. 免疫缺陷者及其家庭成员接触者（应改用IPV）。\n2. 肛周脓肿（暂缓）。"],
+                                ["流感疫苗", "1. 对鸡蛋或疫苗辅料成分严重过敏者（注：轻微鸡蛋过敏非禁忌，但需留观）。"],
+                            ].map(([type, contra], i) => (
+                                <tr key={i} className="hover:bg-slate-50/50 print:break-inside-avoid">
+                                    <td className="p-3 font-medium text-slate-900 align-top">{type}</td>
+                                    <td className="p-3 text-red-700 whitespace-pre-line leading-relaxed print:text-black">{contra}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
         
         {/* Footer */}
