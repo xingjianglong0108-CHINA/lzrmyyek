@@ -7,6 +7,7 @@ import Step1 from './components/Step1';
 import Step2 from './components/Step2';
 import Step3 from './components/Step3';
 import ReferenceTables from './components/ReferenceTables';
+import Watermark from './components/Watermark';
 import { ChevronLeft, ChevronRight, Printer, BookOpen } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -43,7 +44,8 @@ const App: React.FC = () => {
   const report = useMemo(() => generateAssessmentReport(data), [data]);
 
   return (
-      <div className="min-h-screen pb-24">
+      <div className="min-h-screen pb-24 relative">
+          <Watermark />
           <ProgressBar step={step} />
           
           <button 
@@ -58,13 +60,13 @@ const App: React.FC = () => {
 
           {step === 1 && <Header />}
           
-          <main className="px-4 py-6">
+          <main className="px-4 py-6 relative z-10">
               {step === 1 && <Step1 data={data} setData={setData} toggleDetail={toggleDetail} />}
               {step === 2 && <Step2 data={data} setData={setData} updateAnswer={updateAnswer} toggleDetail={toggleDetail} />}
               {step === 3 && <Step3 data={data} report={report} />}
           </main>
 
-          <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 p-4 no-print safe-area-pb z-40">
+          <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 p-4 no-print safe-area-pb z-50">
               <div className="max-w-2xl mx-auto flex justify-between items-center">
                   <button 
                       onClick={() => setStep(s => Math.max(1, s-1))}
