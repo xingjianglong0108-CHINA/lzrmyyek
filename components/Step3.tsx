@@ -1,7 +1,7 @@
 import React from 'react';
 import { AssessmentData, Report } from '../types';
 import { PSEUDO_CONTRAINDICATIONS } from '../constants';
-import { Shield, CheckCircle2 } from 'lucide-react';
+import { Shield, CheckCircle2, AlertTriangle, HelpCircle, Eye, Printer, Users } from 'lucide-react';
 
 interface Step3Props {
   data: AssessmentData;
@@ -9,115 +9,236 @@ interface Step3Props {
 }
 
 const Step3: React.FC<Step3Props> = ({ data, report }) => {
+  const getLevelDetails = (lvl: Report['level']) => {
+    switch (lvl) {
+      case 'cocooning':
+        return {
+          bg: 'bg-indigo-50 border-indigo-100',
+          text: 'text-indigo-800',
+          darkBg: 'bg-indigo-600',
+          iconBg: 'bg-indigo-100 text-indigo-600',
+          title: 'IV. 蚕茧免疫 (Cocooning Strategy)',
+          desc: '患儿存在极重度免疫缺陷，自身无法接种活疫苗且死疫苗应答低下。强烈启动家庭及密切接触者“蚕茧接种方案”，由周围人群筑起无菌防线。',
+          icon: <Users className="w-8 h-8" />
+        };
+      case 'red':
+        return {
+          bg: 'bg-rose-50 border-rose-100',
+          text: 'text-rose-800',
+          darkBg: 'bg-rose-600',
+          iconBg: 'bg-rose-100 text-rose-600',
+          title: 'III. 绝对禁忌 (Red Light)',
+          desc: '存在明确的接种后致命不良反应极高风险病理。永久或长期取消接种对应疫苗的特定剂次。记录绝对禁忌证档案，改用其他抗原或物理保护。',
+          icon: <Shield className="w-8 h-8" />
+        };
+      case 'yellow':
+        return {
+          bg: 'bg-amber-50 border-amber-100',
+          text: 'text-amber-800',
+          darkBg: 'bg-amber-600',
+          iconBg: 'bg-amber-100 text-amber-600',
+          title: 'II. 暂缓接种 (Yellow Light)',
+          desc: '目前处于急性期、神经系统不稳定期、或处于免疫抑制剂/血液制品药物安全洗脱等待期中。推迟当前接种。避免接种反应干扰原发病诊断。',
+          icon: <AlertTriangle className="w-8 h-8" />
+        };
+      case 'green':
+      default:
+        return {
+          bg: 'bg-emerald-50 border-emerald-100',
+          text: 'text-emerald-800',
+          darkBg: 'bg-emerald-600',
+          iconBg: 'bg-emerald-100 text-emerald-600',
+          title: 'I. 准予接种 (Green Light)',
+          desc: '无任何绝对禁忌与慎用，或仅存在稳定的脑瘫、已控制的癫痫、稳定早产儿等。按照适宜常规程序注射，并强制留观 15 至 30 分钟防范晕针及罕见反应。',
+          icon: <CheckCircle2 className="w-8 h-8" />
+        };
+    }
+  };
+
+  const levelInfo = getLevelDetails(report.level);
+
   return (
-      <div className="max-w-2xl mx-auto slide-up">
-          <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 print:border-0 print:shadow-none">
-              
-              <div className="hidden print:block p-8 pb-0">
-                  <div className="flex justify-between items-end border-b-2 border-black pb-4">
-                      <div>
-                          <h1 className="text-2xl font-serif font-bold">儿童免疫接种临床决策评估单</h1>
-                          <p className="text-sm mt-1">Clinical Assessment for Immunization</p>
-                      </div>
-                      <div className="text-right text-xs">
-                          <p>日期: {new Date().toLocaleDateString()}</p>
-                          <p>流水号: {Math.random().toString(36).substring(2, 10).toUpperCase()}</p>
-                      </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-4 mt-6 text-sm border p-4 print-border">
-                      <div><strong>姓名：</strong>{data.name}</div>
-                      <div><strong>性别：</strong>{data.gender === 'male' ? '男' : '女'}</div>
-                      <div><strong>年龄：</strong>{data.age} {data.ageUnit === 'years' ? '岁' : '月'}</div>
-                  </div>
-              </div>
-
-              <div className={`p-8 text-center no-print ${
-                  report.level === 'high' ? 'bg-red-50' : 
-                  report.level === 'medium' ? 'bg-amber-50' : 'bg-emerald-50'
-              }`}>
-                  <div className={`inline-flex p-3 rounded-full mb-3 ${
-                      report.level === 'high' ? 'bg-red-100 text-red-600' : 
-                      report.level === 'medium' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'
-                  }`}>
-                      {report.level === 'low' ? <CheckCircle2 className="w-8 h-8" /> : <Shield className="w-8 h-8" />}
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-900">
-                      {report.level === 'high' ? '建议暂缓或禁忌' : 
-                       report.level === 'medium' ? '需谨慎评估' : '建议接种'}
-                  </h2>
-                  <p className="text-slate-600 mt-2 text-sm max-w-sm mx-auto">
-                      {report.level === 'low' ? '未发现标准禁忌症，请按计划接种。' : '检测到潜在风险因素，请阅读下方详细医疗建议。'}
-                  </p>
-              </div>
-
-              <div className="p-8 space-y-6">
-                  <div className="hidden print:block mb-4">
-                      <h3 className="font-bold border-b border-black pb-1 mb-2">评估结论</h3>
-                      <div className="p-2 border print-border">
-                          {report.level === 'high' ? '⛔ 存在禁忌症 / 高风险' : 
-                           report.level === 'medium' ? '⚠️ 存在注意事项 (Precautions)' : '✅ 适合接种'}
-                      </div>
-                  </div>
-
-                  {report.risks.length > 0 && (
-                      <div>
-                          <h4 className="text-sm font-bold text-red-600 uppercase tracking-wide mb-2 flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-red-600"></span> 绝对禁忌 (Contraindications)
-                          </h4>
-                          <ul className="bg-red-50 rounded-xl p-4 text-sm text-red-800 space-y-2">
-                              {report.risks.map((r, i) => <li key={i}>{r}</li>)}
-                          </ul>
-                      </div>
-                  )}
-
-                  {report.notes.length > 0 && (
-                      <div>
-                          <h4 className="text-sm font-bold text-amber-600 uppercase tracking-wide mb-2 flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-amber-600"></span> 注意事项 (Precautions)
-                          </h4>
-                          <ul className="bg-amber-50 rounded-xl p-4 text-sm text-amber-800 space-y-2">
-                              {report.notes.map((n, i) => <li key={i}>{n}</li>)}
-                          </ul>
-                      </div>
-                  )}
-
-                  {data.details.isPseudo.length > 0 && (
-                      <div>
-                          <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wide mb-2">已排除的假性禁忌</h4>
-                          <div className="flex flex-wrap gap-2">
-                              {data.details.isPseudo.map(idx => (
-                                  <span key={idx} className="px-2 py-1 bg-slate-100 text-slate-500 text-xs rounded border border-slate-200">
-                                      {PSEUDO_CONTRAINDICATIONS[idx]}
-                                  </span>
-                              ))}
-                          </div>
-                      </div>
-                  )}
-
-                  {report.level === 'low' && data.details.isPseudo.length === 0 && (
-                      <div className="text-center py-8 text-slate-400 text-sm">
-                          - 无特殊医疗状况备注 -
-                      </div>
-                  )}
-
-                  <div className="hidden print:block pt-12 mt-12">
-                      <div className="print-grid gap-8">
-                          <div>
-                              <p className="text-sm mb-8 border-b border-black pb-1">评估医生签名 (Physician Signature):</p>
-                          </div>
-                          <div>
-                              <p className="text-sm mb-8 border-b border-black pb-1">监护人知情同意签名 (Parent Signature):</p>
-                          </div>
-                      </div>
-                      <p className="text-xs text-center mt-8 text-slate-500">
-                          本报告仅供临床参考，最终接种决定请遵循现场医师判断。<br/>
-                          Reference: CDC Pink Book, General Best Practice Guidelines for Immunization.
-                      </p>
-                  </div>
-              </div>
+    <div className="max-w-3xl mx-auto slide-up space-y-6">
+      <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 print:border-0 print:shadow-none">
+        
+        {/* A4 Printable Header */}
+        <div className="hidden print:block p-8 pb-0">
+          <div className="flex justify-between items-end border-b-2 border-slate-900 pb-4">
+            <div>
+              <h1 className="text-2xl font-bold font-serif text-slate-900">伴特殊健康状态儿童预防接种临床决策评估单</h1>
+              <p className="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5">Clinical Decision Support Report for Child Immunization (ACIP/CDC Guidelines)</p>
+            </div>
+            <div className="text-right text-xs text-slate-500 font-mono">
+              <p>评估日期: {new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              <p>系统流水号: IMM-{Math.random().toString(36).substring(2, 10).toUpperCase()}</p>
+            </div>
           </div>
+          
+          <div className="grid grid-cols-4 gap-4 mt-6 text-xs border p-4 print-border rounded-xl">
+            <div><strong>儿童姓名：</strong>{data.name || '未填写'}</div>
+            <div><strong>性别：</strong>{data.gender === 'male' ? '男 (Male)' : '女 (Female)'}</div>
+            <div><strong>实足年龄：</strong>{data.age || '0'} {data.ageUnit === 'years' ? '岁' : '月'}</div>
+            <div><strong>体重 (Weight)：</strong>{data.details.steroid.weight ? `${data.details.steroid.weight} kg` : '未填写'}</div>
+          </div>
+        </div>
+
+        {/* Dynamic overall summary block (Visual-only screen block, hidden on print) */}
+        <div className={`p-8 text-center border-b print:hidden ${levelInfo.bg}`}>
+          <div className={`inline-flex p-3 rounded-full mb-3 ${levelInfo.iconBg}`}>
+            {levelInfo.icon}
+          </div>
+          <h2 className="text-xl font-extrabold text-slate-900">
+            {levelInfo.title}
+          </h2>
+          <p className="text-slate-700 mt-2 text-sm max-w-xl mx-auto leading-relaxed">
+            {levelInfo.desc}
+          </p>
+          <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 border border-slate-100 shadow-sm rounded-full text-xs font-semibold text-slate-600">
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+            自动评估引擎决策结论
+          </div>
+        </div>
+
+        {/* Detailed Medical Findings */}
+        <div className="p-8 space-y-6 print:p-0 print:mt-6">
+          
+          {/* Print only section for overall conclusion */}
+          <div className="hidden print:block mb-6">
+            <h3 className="text-sm font-bold border-b border-slate-900 pb-1 mb-2">一、 评估综合结论 (Evaluation Conclusion)</h3>
+            <div className="p-4 border print-border rounded-xl bg-slate-50/50">
+              <p className="text-sm font-bold text-slate-900">
+                决策分级：{levelInfo.title}
+              </p>
+              <p className="text-xs text-slate-700 mt-1.5 leading-relaxed">
+                {report.overallSummary}
+              </p>
+            </div>
+          </div>
+
+          {/* Active Rules and branching logs */}
+          <div className="space-y-6">
+            <h3 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-1 flex items-center gap-2 print:border-slate-900">
+              <span className="w-1.5 h-3.5 bg-blue-600 rounded-sm"></span>
+              {data.name || '儿童'}的详细临床决策路线 ({report.decisions.length} 项触发)
+            </h3>
+
+            <div className="space-y-6">
+              {report.decisions.map((dec, i) => {
+                const decLvl = getLevelDetails(dec.code);
+                
+                return (
+                  <div key={i} className="border border-slate-100 rounded-2xl p-6 bg-slate-50/30 space-y-4 print:border-slate-300 print:bg-white print:break-inside-avoid">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-slate-100">
+                      <div>
+                        <span className="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">
+                          规则: {dec.ruleId}
+                        </span>
+                        <h4 className="text-sm font-bold text-slate-900 mt-1">
+                          {dec.ruleTitle}
+                        </h4>
+                      </div>
+                      
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold w-fit ${decLvl.bg} ${decLvl.text}`}>
+                        <span className={`w-2 h-2 rounded-full ${decLvl.darkBg}`}></span>
+                        {dec.title}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Left: Clinical Action & Guidance */}
+                      <div className="space-y-2">
+                        <div>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">临床执行方案 (Clinical Action)</p>
+                          <p className="text-xs text-slate-800 font-semibold leading-relaxed mt-0.5">{dec.action}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">随访与监护指引 (Follow-up Guidance)</p>
+                          <p className="text-xs text-slate-700 leading-relaxed mt-0.5 whitespace-pre-line">{dec.guidance}</p>
+                        </div>
+                      </div>
+
+                      {/* Right: Parent Advice */}
+                      <div className="bg-blue-50/20 border border-blue-50/50 p-4 rounded-xl space-y-2.5">
+                        <div>
+                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wide">家长沟通话术 (Parent-facing Advice)</p>
+                          <p className="text-xs text-blue-900 italic leading-relaxed mt-1 font-medium">{dec.advice}</p>
+                        </div>
+                        <div className="pt-2 border-t border-blue-100/50">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">临床药理/免疫学机制 (Mechanism)</p>
+                          <p className="text-[10px] text-slate-500 leading-relaxed mt-0.5">{dec.mechanism}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Excluded Pseudo Contraindications (Warm info card) */}
+          {data.details.isPseudo.length > 0 && (
+            <div className="border border-slate-100 rounded-2xl p-5 bg-slate-50/30 print:break-inside-avoid">
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                已安全排除和宣教的假性禁忌症 (Pseudo Contraindications Excluded)
+              </h4>
+              <p className="text-[10px] text-slate-400 leading-relaxed mb-3">
+                患儿存在以下情形，系统已确认其仅为「假性禁忌」。建议正常接种。我们已提供相应的家长宣教沟通指引，以消除家长不必要的接种疑虑，防止无故延迟：
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {data.details.isPseudo.map(idx => (
+                  <span key={idx} className="px-3 py-1.5 bg-emerald-50/50 text-emerald-700 text-xs font-medium rounded-xl border border-emerald-100">
+                    &bull; {PSEUDO_CONTRAINDICATIONS[idx]}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Clinician Sign-off & disclaimer */}
+          <div className="hidden print:block pt-16 mt-12 border-t border-slate-900">
+            <div className="grid grid-cols-2 gap-12">
+              <div className="space-y-16">
+                <p className="text-xs border-b border-slate-900 pb-1 font-bold">评估主检医师签名 (Physician Signature):</p>
+                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                  <span>签署日期: ________年____月____日</span>
+                  <span>执业证号: ____________________</span>
+                </div>
+              </div>
+              <div className="space-y-16">
+                <p className="text-xs border-b border-slate-900 pb-1 font-bold">监护人知情同意签名 (Parent Guardian Signature):</p>
+                <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                  <span>签署日期: ________年____月____日</span>
+                  <span>与患儿关系: __________________</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-12 text-[10px] text-slate-500 leading-relaxed text-center space-y-1 border-t border-slate-100 pt-4 font-serif">
+              <p>本评估结果由“临床免疫预防接种决策系统”基于 ACIP/CDC 指南、免疫缺陷接种共识及实足年龄（Chronological Age）算法自动计算生成。</p>
+              <p>评估单仅作临床学术及接种预审参考，不代替接种现场医师的最终面诊决定与临床体检判读。</p>
+            </div>
+          </div>
+
+          {/* Quick Print guide for web view */}
+          <div className="bg-slate-50 rounded-2xl p-5 flex items-center justify-between gap-4 no-print">
+            <div className="space-y-1">
+              <h4 className="text-xs font-bold text-slate-800">📋 生成纸质处方评估单</h4>
+              <p className="text-[10px] text-slate-500 leading-relaxed">
+                点击右侧按钮将自动排版并呼起系统打印程序，可直接保存为标准的 A4 PDF 文件或连接门诊打印机。
+              </p>
+            </div>
+            <button 
+              onClick={() => window.print()}
+              className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow transition-all"
+            >
+              <Printer className="w-4 h-4" /> 打印 A4 评估单
+            </button>
+          </div>
+
+        </div>
       </div>
+    </div>
   );
 };
 
