@@ -51,6 +51,13 @@ export interface AssessmentDetails {
   q7_subType: 'uncontrolled' | 'stable' | 'history' | '';
   q8_subType: 'covid_vaccine_3w' | 'unrelated_recovered' | '';
   currentLocation: 'nicu' | 'home' | '';
+  
+  // 2026年中国指南增补字段
+  gestationalAge: string;     // 胎龄 (周)，用于卡介苗 31 周界限
+  birthWeight: string;        // 出生体重 (g)，用于乙肝 2000g 界限
+  motherHbsag: 'positive' | 'negative' | 'unknown' | ''; // 母亲 HBsAg 状态
+  hivStatus: 'infected_symptoms' | 'infected_no_symptoms' | 'unknown_symptoms' | 'unknown_no_symptoms' | 'uninfected' | ''; // HIV 感染母亲所生儿童状态
+  jaundiceStatus: 'physiological' | 'breastmilk' | 'stable_high_bilirubin' | 'unstable' | ''; // 黄疸状态
 }
 
 export interface AssessmentData {
@@ -62,6 +69,12 @@ export interface AssessmentData {
   details: AssessmentDetails;
 }
 
+export interface ConflictTip {
+  title: string;
+  chinaPolicy: string;
+  westernPolicy: string;
+}
+
 export interface DecisionItem {
   code: 'green' | 'yellow' | 'red' | 'cocooning';
   title: string;
@@ -71,6 +84,7 @@ export interface DecisionItem {
   guidance: string;
   advice: string; // 家长沟通话术
   mechanism: string; // 临床药理机制
+  conflict?: ConflictTip; // 中国与欧美不符时的双重提示
 }
 
 export interface Report {

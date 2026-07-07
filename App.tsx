@@ -45,7 +45,12 @@ const App: React.FC = () => {
           q4_subType: '',
           q7_subType: '',
           q8_subType: '',
-          currentLocation: 'home'
+          currentLocation: 'home',
+          gestationalAge: '',
+          birthWeight: '',
+          motherHbsag: '',
+          hivStatus: '',
+          jaundiceStatus: ''
       }
   });
 

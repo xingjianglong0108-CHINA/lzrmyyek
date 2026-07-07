@@ -38,7 +38,7 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
           darkBg: 'bg-amber-600',
           iconBg: 'bg-amber-100 text-amber-600',
           title: 'II. 暂缓接种 (Yellow Light)',
-          desc: '目前处于急性期、神经系统不稳定期、或处于免疫抑制剂/血液制品药物安全洗脱等待期中。推迟当前接种。避免接种反应干扰原发病诊断。',
+          desc: '目前处于急性期、不稳定性黄疸、小于31周早产卡介苗暂缓，或处于免疫抑制剂/血液制品药物安全洗脱等待期中。推迟当前接种。避免接种反应干扰原发病诊断。',
           icon: <AlertTriangle className="w-8 h-8" />
         };
       case 'green':
@@ -49,7 +49,7 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
           darkBg: 'bg-emerald-600',
           iconBg: 'bg-emerald-100 text-emerald-600',
           title: 'I. 准予接种 (Green Light)',
-          desc: '无任何绝对禁忌与慎用，或仅存在稳定的脑瘫、已控制的癫痫、稳定早产儿等。按照适宜常规程序注射，并强制留观 15 至 30 分钟防范晕针及罕见反应。',
+          desc: '无任何绝对禁忌与慎用，或仅存在稳定的脑瘫、已控制的癫痫、稳定早产儿、生理性或母乳性黄疸等。按照常规一类/二类程序注射。',
           icon: <CheckCircle2 className="w-8 h-8" />
         };
     }
@@ -65,8 +65,8 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
         <div className="hidden print:block p-8 pb-0">
           <div className="flex justify-between items-end border-b-2 border-slate-900 pb-4">
             <div>
-              <h1 className="text-2xl font-bold font-serif text-slate-900">伴特殊健康状态儿童预防接种临床决策评估单</h1>
-              <p className="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5">Clinical Decision Support Report for Child Immunization (ACIP/CDC Guidelines)</p>
+              <h1 className="text-2xl font-bold font-serif text-slate-900">儿童预防接种临床决策评估单 (2026年最新版)</h1>
+              <p className="text-[10px] text-slate-500 font-mono tracking-wider mt-0.5">Clinical Decision Support Report for Child Immunization (China 2026 & ACIP Comparison)</p>
             </div>
             <div className="text-right text-xs text-slate-500 font-mono">
               <p>评估日期: {new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
@@ -78,7 +78,7 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
             <div><strong>儿童姓名：</strong>{data.name || '未填写'}</div>
             <div><strong>性别：</strong>{data.gender === 'male' ? '男 (Male)' : '女 (Female)'}</div>
             <div><strong>实足年龄：</strong>{data.age || '0'} {data.ageUnit === 'years' ? '岁' : '月'}</div>
-            <div><strong>体重 (Weight)：</strong>{data.details.steroid.weight ? `${data.details.steroid.weight} kg` : '未填写'}</div>
+            <div><strong>出生胎龄/体重：</strong>{data.details.gestationalAge ? `${data.details.gestationalAge}周` : '未填写'} / {data.details.birthWeight ? `${data.details.birthWeight}g` : '未填写'}</div>
           </div>
         </div>
 
@@ -95,7 +95,7 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
           </p>
           <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 border border-slate-100 shadow-sm rounded-full text-xs font-semibold text-slate-600">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
-            自动评估引擎决策结论
+            自动评估引擎决策结论 (基于2026中国指南与ACIP双效算力)
           </div>
         </div>
 
@@ -169,6 +169,42 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
                         </div>
                       </div>
                     </div>
+
+                    {/* 中外政策不符时的双重提示卡片 */}
+                    {dec.conflict && (
+                      <div className="border border-amber-200/60 rounded-xl bg-amber-50/10 overflow-hidden animate-slide-up mt-3">
+                        <div className="bg-amber-50/50 px-4 py-2 border-b border-amber-100/60 flex items-center justify-between text-xs font-bold text-amber-950">
+                          <span className="flex items-center gap-1.5">
+                            <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                            {dec.conflict.title} (中外免疫接种管理规范差异提示)
+                          </span>
+                          <span className="text-[9px] font-mono text-amber-600 font-semibold uppercase tracking-wider bg-white border border-amber-100 px-1.5 py-0.5 rounded-md">Policy Contrast</span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-amber-100">
+                          {/* 中国政策栏 */}
+                          <div className="p-4 space-y-1.5">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs">🇨🇳</span>
+                              <span className="text-xs font-bold text-slate-800">中国官方政策 (2026年最新指南)</span>
+                            </div>
+                            <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+                              {dec.conflict.chinaPolicy}
+                            </p>
+                          </div>
+                          
+                          {/* 欧美政策栏 */}
+                          <div className="p-4 space-y-1.5">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs">🇪🇺 / 🇺🇸</span>
+                              <span className="text-xs font-bold text-slate-800">欧美 ACIP / CDC 指南规范</span>
+                            </div>
+                            <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+                              {dec.conflict.westernPolicy}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -183,7 +219,7 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
                 已安全排除和宣教的假性禁忌症 (Pseudo Contraindications Excluded)
               </h4>
               <p className="text-[10px] text-slate-400 leading-relaxed mb-3">
-                患儿存在以下情形，系统已确认其仅为「假性禁忌」。建议正常接种。我们已提供相应的家长宣教沟通指引，以消除家长不必要的接种疑虑，防止无故延迟：
+                患儿存在以下情形，系统已确认其仅为「假性禁忌」。根据我国2026最新接种标准建议正常开展接种，并提供了宣教指引，防止无故延迟：
               </p>
               <div className="flex flex-wrap gap-2">
                 {data.details.isPseudo.map(idx => (
@@ -215,7 +251,7 @@ const Step3: React.FC<Step3Props> = ({ data, report }) => {
             </div>
             
             <div className="mt-12 text-[10px] text-slate-500 leading-relaxed text-center space-y-1 border-t border-slate-100 pt-4 font-serif">
-              <p>本评估结果由“临床免疫预防接种决策系统”基于 ACIP/CDC 指南、免疫缺陷接种共识及实足年龄（Chronological Age）算法自动计算生成。</p>
+              <p>本评估结果由“临床免疫预防接种决策系统”基于我国 2026 年最新预防接种规范与国际 ACIP/CDC 指南联合算力计算生成。</p>
               <p>评估单仅作临床学术及接种预审参考，不代替接种现场医师的最终面诊决定与临床体检判读。</p>
             </div>
           </div>
